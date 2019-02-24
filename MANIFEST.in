@@ -1,0 +1,8 @@
+include LICENSE
+include MANIFEST.in
+include README.*
+include setup.*
+include tox.ini .gitignore .travis.yml
+include pkg/*
+recursive-include smhtml *.py
+recursive-include tests *.py

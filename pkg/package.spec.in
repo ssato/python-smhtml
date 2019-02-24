@@ -1,0 +1,75 @@
+%global pkgname smhtml
+
+%if 0%{?fedora} || 0%{?rhel} > 7 || 0%{?epel} > 7
+%global with_python3 1
+%endif
+
+%global desc \
+A simple and experimental python library to parse and dump MHTML data.
+
+Name:           python-%{pkgname}
+Version:        @VERSION@
+Release:        1%{?dist}
+Summary:        Python library to parse and dump MHTML data
+Group:          Development/Tools
+License:        MIT
+URL:            https://github.com/ssato/python-smhtml
+Source0:        %{url}/archive/RELEASE_%{version}.tar.gz
+BuildArch:      noarch
+%if 0%{?with_python3}
+BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
+%else
+BuildRequires:  python2-setuptools
+BuildRequires:  python2-devel
+%endif
+
+%description %{desc}
+
+%if 0%{?with_python3}
+%package -n python3-%{pkgname}
+Summary:        %{summary}
+Requires:       python3-chardet
+%{?python_provide:%python_provide python3-%{pkgname}}
+
+%description -n python3-%{pkgname} %{desc}
+%else
+
+%package -n python2-%{pkgname}
+Summary:        %{summary}
+Requires:       python2-chardet
+%{?python_provide:%python_provide python2-%{pkgname}}
+
+%description -n python2-%{pkgname} %{desc}
+%endif
+
+%prep
+%autosetup -n %{pkgname}-%{version}
+
+%build
+%if 0%{?with_python3}
+%py3_build
+%else
+%py2_build
+%endif
+
+%install
+%if 0%{?with_python3}
+%py3_install
+%else
+%py2_install
+%endif
+
+%if 0%{?with_python3}
+%files -n python3-%{pkgname}
+%{python3_sitelib}/%{pkgname}*
+%else
+%files -n python2-%{pkgname}
+%{python_sitelib}/%{pkgname}*
+%endif
+%doc README.rst examples
+%{_bindir}/*
+
+%changelog
+* Sun Feb 24 2019 Satoru SATOH <ssato@redhat.com> - 0.0.1-1
+- Initial packaging

@@ -1,0 +1,27 @@
+# Ref. http://about.travis-ci.org/docs/user/languages/python/
+language: python
+python:
+# Disabled for a while until fixes happen in outside of anytemplate, e.g. ordereddict, asteroid.
+#    - 2.6
+    - 2.7
+    - 3.4
+    - 3.5
+    - 3.6
+# .. seealso:: https://github.com/travis-ci/travis-ci/issues/9815
+matrix:
+  include:
+    - python: 3.7
+      dist: xenial
+      sudo: true
+
+install:
+    - pip install tox-travis
+script:
+    - tox
+after_success:
+  - coveralls
+notifications:
+    email:
+        recipients:
+            - satoru.satoh+github@gmail.com
+        on_failure: always
