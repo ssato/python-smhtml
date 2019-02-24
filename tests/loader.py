@@ -9,15 +9,15 @@ import os.path
 import os
 import unittest
 
-import smhtml.parser as TT
+import smhtml.loader as TT
 import tests.common as TC
 
 
 class Test(unittest.TestCase):
 
-    def test_20_parse(self):
+    def test_20_load(self):
         ipath = os.path.join(TC.selfdir(), "res/python-smhtml.mhtml")
-        res = TT.parse(ipath)
+        res = TT.load(ipath)
         self.assertTrue(res)
 
 # vim:sw=4:ts=4:et:

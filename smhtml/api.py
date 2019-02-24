@@ -12,7 +12,8 @@ from __future__ import absolute_import
 from .globals import (
     PACKAGE, AUTHOR, VERSION, LOGGER  # flake8: noqa
 )
-from .parser import parse, parse_itr  # flake8: noqa
+from .loader import load, loads  # flake8: noqa
+from .dumper import dump, dumps  # flake8: noqa
 
 
 def version():

@@ -1,11 +1,9 @@
 #
-# -*- coding: utf-8; mode: python -*-
-#
 # Copyright (C) 2019 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
 # pylint: disable=unused-import
-r"""Simple and very experimental MHTML Parser
+r"""Load and parse MHTML data.
 
 .. versionadded:: 0.0.1
 """
@@ -15,25 +13,8 @@ import base64
 import email
 import mimetypes
 import quopri
-import chardet
 
-
-def detect_charset(bmsg, default="ascii"):
-    r"""
-    :param bmsg: A byte data to detect charset
-    :return: A string represents charset such as 'utf-8', 'iso-2022-jp'
-
-    >>> detect_charset(b"a")
-    'ascii'
-    >>> detect_charset(b"")
-    'ascii'
-    >>> detect_charset(u"あ".encode("utf-8"))
-    'utf-8'
-    """
-    if not bmsg:
-        return default
-
-    return chardet.detect(bmsg)["encoding"]
+import smhtml.utils
 
 
 def decode_part(part):
@@ -54,7 +35,7 @@ def decode_part(part):
         bdata = msg
 
     if mtype == "text":
-        charset = detect_charset(bdata)
+        charset = smhtml.utils.detect_charset(bdata)
         data = bdata.decode(charset, "ignore")
     else:
         charset = None
@@ -78,19 +59,12 @@ def get_or_gen_filename(part, idx=0):
     return filename
 
 
-def parse_itr(filepath):
+def parse_itr(mdata):
     """
-    :param filepath: :class:`pathlib.Path` object
-    :return: A generator yields each part parsed from `filepath` opened
+    :param mdata: Input Multi-part MIME data
+    :return: A generator yields each part in `mdata`
     """
-    with open(filepath) as fobj:
-        mhtml_data = email.message_from_file(fobj)
-
-    if not mhtml_data.is_multipart():
-        raise ValueError("Multi-part MIME data was not found in "
-                         "'%s'" % filepath)
-
-    for idx, part in enumerate(mhtml_data.walk()):
+    for idx, part in enumerate(mdata.walk()):
         if part.get_content_maintype() == "multipart":
             continue
 
@@ -102,11 +76,50 @@ def parse_itr(filepath):
         yield info
 
 
-def parse(filepath):
+def loads_itr(content):
+    """
+    :param content: Input MHTML data as a string
+    :return: A generator yields each part parsed from `content`
+    """
+    mdata = email.message_from_string(content)
+
+    if not mdata.is_multipart():
+        raise ValueError("Multi-part MIME data was not found in "
+                         "given string: %s ..." % content[:100])
+
+    for info in parse_itr(mdata):
+        yield info
+
+
+def load_itr(filepath):
+    """
+    :param filepath: :class:`pathlib.Path` object
+    :return: A generator yields each part parsed from `filepath` opened
+    """
+    with open(filepath) as fobj:
+        mdata = email.message_from_file(fobj)
+
+    if not mdata.is_multipart():
+        raise ValueError("Multi-part MIME data was not found in "
+                         "'%s'" % filepath)
+
+    for info in parse_itr(mdata):
+        yield info
+
+
+def loads(content):
+    """
+    :param content: Input MHTML data as a string
+    :return: A list of parsed data
+    """
+    return list(loads_itr(content))
+
+
+def load(filepath):
     """
     :param filepath: :class:`pathlib.Path` object
     :return: A list of parsed data
     """
-    return list(parse_itr(filepath))
+    return list(load_itr(filepath))
 
 # vim:sw=4:ts=4:et:

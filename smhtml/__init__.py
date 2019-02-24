@@ -13,13 +13,12 @@ python-smhtml is a simple and experimental MHTML parsing library for python.
 
 """
 from .api import (
-    AUTHOR, VERSION,
-    parse, parse_itr
+    AUTHOR, VERSION, load, loads, dump, dumps  # flake8: noqa
 )
 
 __author__ = AUTHOR
 __version__ = VERSION
 
-__all__ = ["parse", "parse_itr"]
+__all__ = ["load", "load", "dump", "dumps"]
 
 # vim:sw=4:ts=4:et:
