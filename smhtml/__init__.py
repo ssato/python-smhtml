@@ -19,6 +19,6 @@ from .api import (
 __author__ = AUTHOR
 __version__ = VERSION
 
-__all__ = ["load", "load", "dump", "dumps"]
+__all__ = ["load", "load", "extract", "dump", "dumps"]
 
 # vim:sw=4:ts=4:et:

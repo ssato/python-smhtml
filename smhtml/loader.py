@@ -11,6 +11,8 @@ from __future__ import absolute_import
 
 import email
 import mimetypes
+import os.path
+import os
 
 import smhtml.utils
 
@@ -110,5 +112,22 @@ def load(filepath):
     :return: A list of parsed data
     """
     return list(load_itr(filepath))
+
+
+def extract(filepath, output):
+    """
+    :param filepath: :class:`pathlib.Path` object represents input
+    :param output: :class:`pathlib.Path` object represents output dir
+    """
+    if output == "-":
+        raise ValueError("Output dir must be given to extract")
+
+    if os.path.exists(output) and os.path.isfile(output):
+        raise OSError("Output '%s' already exists as a file!" % output)
+
+    os.makedirs(output)
+    for inf in load_itr(filepath):
+        with open(os.path.join(output, inf["filename"]), "wb") as out:
+            out.write(inf["payload"])
 
 # vim:sw=4:ts=4:et:
