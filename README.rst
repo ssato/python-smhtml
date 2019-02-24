@@ -30,7 +30,7 @@ This is a simple and experimental python library to parse and dump MHTML [#]_ da
 - Author: Satoru SATOH <satoru.satoh@gmail.com>
 - License: MIT
 
-.. [#] https://ja.wikipedia.org/wiki/MHTML
+.. [#] https://en.wikipedia.org/wiki/MHTML
 
 .. image:: examples/smhtml_cli-screenshot-0.png
 
