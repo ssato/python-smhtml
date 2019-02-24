@@ -21,6 +21,8 @@ import mimetypes
 import os.path
 import os
 
+from smhtml.globals import LOGGER
+
 
 def list_files_itr(input_):
     """
@@ -83,6 +85,7 @@ def make_multipart_data(input_, sender=None, subject=None):
     """
     mdata = init_multipart_data(sender, subject)
     for filepath in list_files_itr(input_):
+        LOGGER.debug("Making the part: %s", filepath)
         part = make_part(filepath)
         mdata.attach(part)
 

@@ -14,8 +14,8 @@ import sys
 
 import smhtml
 
-
-LOGGER = logging.getLogger(__file__)
+LOGGER = logging.getLogger("smhtml")
+LOGGER.addHandler(logging.StreamHandler())
 
 
 def option_parser():

@@ -15,6 +15,7 @@ import os.path
 import os
 
 import smhtml.utils
+from smhtml.globals import LOGGER
 
 
 def decode_part(part):
@@ -63,6 +64,8 @@ def parse_itr(mdata):
         info = decode_part(part)
         info["index"] = idx
         info["filename"] = filename
+
+        LOGGER.debug("part#%d: filename=%s", idx, filename)
 
         yield info
 
@@ -129,6 +132,8 @@ def extract(filepath, output):
     for inf in load_itr(filepath):
         outpath = os.path.join(output, inf["filename"])
         outdir = os.path.dirname(outpath)
+
+        LOGGER.debug("Extract %s from %s", inf["filename"], filepath)
 
         if not os.path.exists(outdir):
             os.makedirs(outdir)
