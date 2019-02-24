@@ -64,7 +64,7 @@ def main(argv=None):
         psr.print_usage()
         sys.exit(0)
 
-    (fname, fext) = os.path.splitext(args.input)
+    (_fname, fext) = os.path.splitext(args.input)
     if fext and fext in (".mht", ".mhtml"):
         try:  # Try to extract given MHTML data
             smhtml.extract(args.input, args.output)
