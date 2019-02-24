@@ -9,10 +9,8 @@ r"""Load and parse MHTML data.
 """
 from __future__ import absolute_import
 
-import base64
 import email
 import mimetypes
-import quopri
 
 import smhtml.utils
 
@@ -21,18 +19,9 @@ def decode_part(part):
     """
     :param part: :class:`email.message.Message` object (MIME part)
     """
-    cte = part.get_all("Content-Transfer-Encoding")[0]
-    msg = part.get_payload()
-
+    bdata = part.get_payload(decode=True)
     ctype = part.get_content_type()
     mtype = part.get_content_maintype()
-
-    if cte == "base64":
-        bdata = base64.b64decode(msg)
-    elif cte == "quoted-printable":
-        bdata = quopri.decodestring(msg)
-    else:
-        bdata = msg
 
     if mtype == "text":
         charset = smhtml.utils.detect_charset(bdata)
@@ -41,7 +30,7 @@ def decode_part(part):
         charset = None
         data = bdata
 
-    return dict(type=ctype, encoding=charset, data=data,
+    return dict(type=ctype, encoding=charset, data=data, payload=bdata,
                 location=part.get_all("Content-Location"))
 
 
