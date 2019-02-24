@@ -51,6 +51,24 @@ Requires:       python2-chardet
 %py3_build
 %else
 %py2_build
+# Dirty hacks.
+test -d %{buildroot}%{python_sitelib}/%{pkgname} || {
+cp -a src/%{pkgname} %{buildroot}%{python_sitelib}/
+}
+test -d %{buildroot}/usr/bin || {
+install -d %{buildroot}/usr/bin
+cat << EOF > %{buildroot}/usr/bin/smhtml_cli
+#! /usr/bin/python
+import sys
+from pkg_resources import load_entry_point
+
+if __name__ == '__main__':
+    sys.exit(
+        load_entry_point('smhtml', 'console_scripts', 'smhtml_cli')()
+    )
+EOF
+}
+chmod +x %{buildroot}/usr/bin/smhtml_cli
 %endif
 
 %install
@@ -68,6 +86,7 @@ Requires:       python2-chardet
 %{python_sitelib}/%{pkgname}*
 %endif
 %doc README.rst
+%{_bindir}/*
 
 %changelog
 * Sun Feb 24 2019 Satoru SATOH <ssato@redhat.com> - 0.0.1-1
