@@ -66,11 +66,12 @@ def main(argv=None):
 
     (fname, fext) = os.path.splitext(args.input)
     if fext and fext in (".mht", ".mhtml"):
-        try:
+        try:  # Try to extract given MHTML data
             smhtml.extract(args.input, args.output)
         except (ValueError, OSError) as exc:
             print(str(exc), file=sys.stderr)
     else:
+        # Try to make MHTML data from given file or files under it.
         smhtml.dump(args.input, args.output)
 
 
