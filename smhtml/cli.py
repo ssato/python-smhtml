@@ -66,19 +66,10 @@ def main(argv=None):
 
     (fname, fext) = os.path.splitext(args.input)
     if fext and fext in (".mht", ".mhtml"):
-        if args.output == "-":
-            print("Output dir must be given in extract mode")
-            sys.exit(-1)
-
-        if os.path.exists(args.output) and os.path.isfile(args.output):
-            print("Output '%s' already exists and it's a file!" % args.output)
-            sys.exit(-1)
-
-        os.makedirs(args.output)
-        for finfo in smhtml.load(args.input):
-            with open(os.path.join(args.output, finfo["filename"]), "wb") as out:
-                out.write(finfo["payload"])
-
+        try:
+            smhtml.extract(args.input, args.output)
+        except (ValueError, OSError) as exc:
+            print(str(exc), file=sys.stderr)
     else:
         smhtml.dump(args.input, args.output)
 
