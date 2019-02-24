@@ -19,13 +19,7 @@ class Test(unittest.TestCase):
         self.assertTrue(res)
 
 
-class TestWithIO(unittest.TestCase):
-
-    def setUp(self):
-        self.workdir = TC.setup_workdir()
-
-    def tearDown(self):
-        TC.cleanup_workdir(self.workdir)
+class TestWithIO(TC.TestWithIO):
 
     def test_20_dump__single_file(self):
         outpath = os.path.join(self.workdir, "test.mht")
