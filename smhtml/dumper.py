@@ -86,7 +86,7 @@ def make_multipart_data(input_, sender=None, subject=None):
         part = make_part(filepath)
         mdata.attach(part)
 
-    return mdata.as_string()
+    return mdata
 
 
 def dumps(input_, **options):
@@ -95,7 +95,7 @@ def dumps(input_, **options):
     :param options: Optional keyword arguments given to make_multipart_data
     :return: Result multi-part MIMME data as a string
     """
-    return make_multipart_data(input_, **options)
+    return make_multipart_data(input_, **options).as_string()
 
 
 def dump(input_, output, force=False, **options):
