@@ -67,8 +67,7 @@ Requires:       python2-chardet
 %files -n python2-%{pkgname}
 %{python_sitelib}/%{pkgname}*
 %endif
-%doc README.rst examples
-%{_bindir}/*
+%doc README.rst
 
 %changelog
 * Sun Feb 24 2019 Satoru SATOH <ssato@redhat.com> - 0.0.1-1
