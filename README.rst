@@ -27,7 +27,7 @@ About
 
 This is a simple and experimental python library to parse and dump MHTML [#]_ data.
 
-- Author: Satoru SATOH <ssato@redhat.com>
+- Author: Satoru SATOH <satoru.satoh@gmail.com>
 - License: MIT
 
 .. [#] https://ja.wikipedia.org/wiki/MHTML
