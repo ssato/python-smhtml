@@ -89,5 +89,5 @@ chmod +x %{buildroot}/usr/bin/smhtml_cli
 %{_bindir}/*
 
 %changelog
-* Sun Feb 24 2019 Satoru SATOH <ssato@redhat.com> - 0.0.1-1
+* Mon Feb 25 2019 Satoru SATOH <ssato@redhat.com> - 0.0.1-1
 - Initial packaging
