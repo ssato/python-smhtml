@@ -32,4 +32,6 @@ This is a simple and experimental python library to parse and dump MHTML [#]_ da
 
 .. [#] https://ja.wikipedia.org/wiki/MHTML
 
+.. image:: examples/smhtml_cli-screenshot-0.png
+
 .. vim:sw=2:ts=2:et:

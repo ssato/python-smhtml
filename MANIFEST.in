@@ -4,5 +4,6 @@ include README.*
 include setup.*
 include tox.ini .gitignore .travis.yml
 include pkg/*
+include examples/*
 recursive-include smhtml *.py
 recursive-include tests *.py
