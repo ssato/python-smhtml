@@ -127,7 +127,13 @@ def extract(filepath, output):
 
     os.makedirs(output)
     for inf in load_itr(filepath):
-        with open(os.path.join(output, inf["filename"]), "wb") as out:
+        outpath = os.path.join(output, inf["filename"])
+        outdir = os.path.dirname(outpath)
+
+        if not os.path.exists(outdir):
+            os.makedirs(outdir)
+
+        with open(outpath, "wb") as out:
             out.write(inf["payload"])
 
 # vim:sw=4:ts=4:et:
