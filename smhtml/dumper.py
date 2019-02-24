@@ -49,7 +49,7 @@ def init_multipart_data(sender=None, subject=None):
 
 def make_part(filepath):
     """
-    :param input_: :class:`pahtlib.Path` object points a file
+    :param filepath: :class:`pahtlib.Path` object points a file
     """
     (ctype, encoding) = mimetypes.guess_type(filepath)
     if ctype is None or encoding is not None:
