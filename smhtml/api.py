@@ -5,7 +5,7 @@
 # pylint: disable=unused-import
 r"""Public APIs of smhtml module.
 
-.. versionadded:: 0.1
+.. versionadded:: 0.0.1
 """
 from __future__ import absolute_import
 
