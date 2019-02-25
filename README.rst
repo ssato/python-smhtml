@@ -25,7 +25,8 @@ About
    :target: https://landscape.io/github/ssato/python-smhtml/master
    :alt: [Code Health]
 
-This is a simple and experimental python library to parse and dump MHTML [#]_ data.
+This is a simple and experimental python library to load MHTML files and
+extract files from them, and dump (make) MHTML [#]_ data from files.
 
 - Author: Satoru SATOH <satoru.satoh@gmail.com>
 - License: MIT
