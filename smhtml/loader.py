@@ -20,7 +20,10 @@ from smhtml.globals import LOGGER
 
 def decode_part(part):
     """
-    :param part: :class:`email.message.Message` object (MIME part)
+    Decode a part of MIME multi-part data.
+
+    :param part: :class:`email.mime.base.MIMEBase` object
+    :return: A dict contains various info of given MIME `part` data
     """
     bdata = part.get_payload(decode=True)
     ctype = part.get_content_type()
@@ -39,7 +42,11 @@ def decode_part(part):
 
 def get_or_gen_filename(part, idx=0):
     """
-    :param part: :class:`email.message.Message` object (MIME part)
+    Get the filename from given MIME `part` data or generate filename to be
+    used to save its payload later.
+
+    :param part: :class:`email.mime.base.MIMEBase` object
+    :return: A filename as a string
     """
     filename = part.get_filename()
     if not filename:
@@ -53,8 +60,10 @@ def get_or_gen_filename(part, idx=0):
 
 def parse_itr(mdata):
     """
-    :param mdata: Input Multi-part MIME data
-    :return: A generator yields each part in `mdata`
+    An iterator to yield each info from given MIME multi-part data.
+
+    :param mdata: :class:`email.message.Message` object
+    :return: A generator yields info of each part in `mdata`
     """
     for idx, part in enumerate(mdata.walk()):
         if part.get_content_maintype() == "multipart":
@@ -72,8 +81,12 @@ def parse_itr(mdata):
 
 def loads_itr(content):
     """
+    An iterator to yield each info from given MIME multi-part data as a string
+    after some checks.
+
     :param content: Input MHTML data as a string
-    :return: A generator yields each part parsed from `content`
+    :return: A generator yields info of each part loaded from `content`
+    :raises: ValueError
     """
     mdata = email.message_from_string(content)
 
@@ -87,8 +100,12 @@ def loads_itr(content):
 
 def load_itr(filepath):
     """
-    :param filepath: :class:`pathlib.Path` object
+    An iterator to yield each info from given MIME multi-part data as a file
+    after some checks.
+
+    :param filepath: :class:`pathlib.Path` object or a string represents path
     :return: A generator yields each part parsed from `filepath` opened
+    :raises: ValueError
     """
     with open(filepath) as fobj:
         mdata = email.message_from_file(fobj)
@@ -103,24 +120,36 @@ def load_itr(filepath):
 
 def loads(content):
     """
+    Load and return a list of info of each part of MIME multi-part data from
+    given data as a string.
+
     :param content: Input MHTML data as a string
-    :return: A list of parsed data
+    :return: A list of info of each part of MIME multi-part data
+    :raises: ValueError
     """
     return list(loads_itr(content))
 
 
 def load(filepath):
     """
-    :param filepath: :class:`pathlib.Path` object
-    :return: A list of parsed data
+    Load and return a list of info of each part of MIME multi-part data from
+    given data as a file.
+
+    :param filepath: :class:`pathlib.Path` object or a string represents path
+    :return: A list of info of each part of MIME multi-part data
+    :raises: ValueError
     """
     return list(load_itr(filepath))
 
 
 def extract(filepath, output):
     """
+    Load and extract each part of MIME multi-part data as files from given data
+    as a file.
+
     :param filepath: :class:`pathlib.Path` object represents input
     :param output: :class:`pathlib.Path` object represents output dir
+    :raises: ValueError
     """
     if output == "-":
         raise ValueError("Output dir must be given to extract")
