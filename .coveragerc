@@ -1,0 +1,9 @@
+[report]
+omit =
+    .tox/*/*/*
+    .tox/*/*/*/*
+
+[run]
+omit =
+    .tox/*/*/*
+    .tox/*/*/*/*
