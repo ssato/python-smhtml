@@ -1,6 +1,6 @@
-=============
-smhtml
-=============
+=================
+python-smhtml
+=================
 
 About
 ======
@@ -31,6 +31,12 @@ This is a simple and experimental python library to parse and dump MHTML [#]_ da
 - License: MIT
 
 .. [#] https://en.wikipedia.org/wiki/MHTML
+
+Misc
+======
+
+Here is a demo screenshot to show its CLI frontend can extract files from MHTML
+data and make (dump) MHTML data from files.
 
 .. image:: examples/smhtml_cli-screenshot-0.png
 
