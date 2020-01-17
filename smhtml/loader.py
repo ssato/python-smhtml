@@ -142,13 +142,14 @@ def load(filepath):
     return list(load_itr(filepath))
 
 
-def extract(filepath, output):
+def extract(filepath, output, path_names_only=False):
     """
     Load and extract each part of MIME multi-part data as files from given data
     as a file.
 
     :param filepath: :class:`pathlib.Path` object represents input
     :param output: :class:`pathlib.Path` object represents output dir
+    :param path_names_only: Use the leaf, not full path, of attached files
     :raises: ValueError
     """
     if output == "-":
@@ -159,10 +160,14 @@ def extract(filepath, output):
 
     os.makedirs(output)
     for inf in load_itr(filepath):
-        outpath = os.path.join(output, inf["filename"])
+        filename = inf["filename"]
+        if path_names_only:
+            filename = os.path.split(filename)[-1]
+
+        outpath = os.path.join(output, filename)
         outdir = os.path.dirname(outpath)
 
-        LOGGER.debug("Extract %s from %s", inf["filename"], filepath)
+        LOGGER.debug("Extract %s from %s", filename, filepath)
 
         if not os.path.exists(outdir):
             os.makedirs(outdir)
