@@ -142,14 +142,14 @@ def load(filepath):
     return list(load_itr(filepath))
 
 
-def extract(filepath, output, path_names_only=False):
+def extract(filepath, output, usebasename=False):
     """
     Load and extract each part of MIME multi-part data as files from given data
     as a file.
 
     :param filepath: :class:`pathlib.Path` object represents input
     :param output: :class:`pathlib.Path` object represents output dir
-    :param path_names_only: Use the leaf, not full path, of attached files
+    :param usebasename: Use the basename, not full path, when writing files
     :raises: ValueError
     """
     if output == "-":
@@ -161,7 +161,7 @@ def extract(filepath, output, path_names_only=False):
     os.makedirs(output)
     for inf in load_itr(filepath):
         filename = inf["filename"]
-        if path_names_only:
+        if usebasename:
             filename = os.path.split(filename)[-1]
 
         outpath = os.path.join(output, filename)
