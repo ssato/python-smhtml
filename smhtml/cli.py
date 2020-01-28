@@ -34,6 +34,8 @@ def option_parser():
                      help="Verbose mode")
     psr.add_argument("-q", "--quiet", action="store_const", const=2,
                      dest="verbose", help="Quiet mode")
+    psr.add_argument("--usebasename", action='store_true',
+                     help="Use basename, not full path, when writing files")
     return psr
 
 
@@ -69,7 +71,7 @@ def main(argv=None):
         try:  # Try to extract given MHTML data
             LOGGER.info("'%s' looks a MHTML data and try to extract files "
                         "from it", args.input)
-            smhtml.extract(args.input, args.output)
+            smhtml.extract(args.input, args.output, args.usebasename)
         except (ValueError, OSError) as exc:
             print(str(exc), file=sys.stderr)
     else:
