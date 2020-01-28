@@ -35,7 +35,7 @@ def option_parser():
     psr.add_argument("-q", "--quiet", action="store_const", const=2,
                      dest="verbose", help="Quiet mode")
     psr.add_argument("--usebasename", action='store_true',
-                     help="Use the basename, not full path, when writing files")
+                     help="Use basename, not full path, when writing files")
     return psr
 
 
