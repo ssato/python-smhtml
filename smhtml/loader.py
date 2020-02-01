@@ -36,28 +36,20 @@ def decode_part(part):
         charset = None
         data = bdata
 
+    location = part.get_all("Content-Location")
     return dict(type=ctype, encoding=charset, data=data, payload=bdata,
-                location=part.get_all("Content-Location"))
+                location=location[0] if location else None)
 
 
-def get_or_gen_filename(part, idx=0, uselocation=False):
+def get_or_gen_filename(part, idx=0):
     """
     Get the filename from given MIME `part` data or generate filename to be
     used to save its payload later.
 
     :param part: :class:`email.mime.base.MIMEBase` object
-    :param idx: Number used as fallback filename
-    :param uselocation: Use content-location header for output path
     :return: A filename as a string
     """
     filename = part.get_filename()
-
-    # if not set in Content-Disposition, look in Content-Location
-    if uselocation and not filename:
-        location = part.get_params(header='Content-Location')
-        if location and location[0]:
-            filename = location[0][0]
-
     if not filename:
         fileext = mimetypes.guess_extension(part.get_content_type())
         if not fileext:
@@ -67,19 +59,18 @@ def get_or_gen_filename(part, idx=0, uselocation=False):
     return filename
 
 
-def parse_itr(mdata, uselocation=False):
+def parse_itr(mdata):
     """
     An iterator to yield each info from given MIME multi-part data.
 
     :param mdata: :class:`email.message.Message` object
-    :param uselocation: Use content-location header for output path
     :return: A generator yields info of each part in `mdata`
     """
     for idx, part in enumerate(mdata.walk()):
         if part.get_content_maintype() == "multipart":
             continue
 
-        filename = get_or_gen_filename(part, idx=idx, uselocation=uselocation)
+        filename = get_or_gen_filename(part, idx=idx)
         info = decode_part(part)
         info["index"] = idx
         info["filename"] = filename
@@ -108,13 +99,12 @@ def loads_itr(content):
         yield info
 
 
-def load_itr(filepath, uselocation=False):
+def load_itr(filepath):
     """
     An iterator to yield each info from given MIME multi-part data as a file
     after some checks.
 
     :param filepath: :class:`pathlib.Path` object or a string represents path
-    :param uselocation: Use content-location header for output path
     :return: A generator yields each part parsed from `filepath` opened
     :raises: ValueError
     """
@@ -125,7 +115,7 @@ def load_itr(filepath, uselocation=False):
         raise ValueError("Multi-part MIME data was not found in "
                          "'%s'" % filepath)
 
-    for info in parse_itr(mdata, uselocation):
+    for info in parse_itr(mdata):
         yield info
 
 
@@ -153,16 +143,16 @@ def load(filepath):
     return list(load_itr(filepath))
 
 
-def extract(filepath, output, uselocation=False,
-            usebasename=False):
+def extract(filepath, output, usebasename=False, outputfilenamer=None):
     """
     Load and extract each part of MIME multi-part data as files from given data
     as a file.
 
     :param filepath: :class:`pathlib.Path` object represents input
     :param output: :class:`pathlib.Path` object represents output dir
-    :param uselocation: Use content-location header for output path
     :param usebasename: Use the basename, not full path, when writing files
+    :param outputfilenamer: Callback fn takes `inf` and returns a filename
+    For example, it could return a filename based on `inf['location']`
     :raises: ValueError
     """
     if output == "-":
@@ -172,10 +162,14 @@ def extract(filepath, output, uselocation=False,
         raise OSError("Output '%s' already exists as a file!" % output)
 
     os.makedirs(output)
-    for inf in load_itr(filepath, uselocation):
+    for inf in load_itr(filepath):
         filename = inf["filename"]
+
         if usebasename:
             filename = os.path.split(filename)[-1]
+
+        if outputfilenamer:
+            filename = outputfilenamer(inf)
 
         outpath = os.path.join(output, filename)
         outdir = os.path.dirname(outpath)
