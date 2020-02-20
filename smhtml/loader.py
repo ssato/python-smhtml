@@ -36,8 +36,9 @@ def decode_part(part):
         charset = None
         data = bdata
 
+    location = part.get_all("Content-Location")
     return dict(type=ctype, encoding=charset, data=data, payload=bdata,
-                location=part.get_all("Content-Location"))
+                location=location[0] if location else None)
 
 
 def get_or_gen_filename(part, idx=0):
@@ -142,7 +143,7 @@ def load(filepath):
     return list(load_itr(filepath))
 
 
-def extract(filepath, output, usebasename=False):
+def extract(filepath, output, usebasename=False, outputfilenamer=None):
     """
     Load and extract each part of MIME multi-part data as files from given data
     as a file.
@@ -150,6 +151,8 @@ def extract(filepath, output, usebasename=False):
     :param filepath: :class:`pathlib.Path` object represents input
     :param output: :class:`pathlib.Path` object represents output dir
     :param usebasename: Use the basename, not full path, when writing files
+    :param outputfilenamer: Callback fn takes `inf` and returns a filename
+    For example, it could return a filename based on `inf['location']`
     :raises: ValueError
     """
     if output == "-":
@@ -161,8 +164,12 @@ def extract(filepath, output, usebasename=False):
     os.makedirs(output)
     for inf in load_itr(filepath):
         filename = inf["filename"]
+
         if usebasename:
             filename = os.path.split(filename)[-1]
+
+        if outputfilenamer:
+            filename = outputfilenamer(inf)
 
         outpath = os.path.join(output, filename)
         outdir = os.path.dirname(outpath)
